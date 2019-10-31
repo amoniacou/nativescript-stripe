@@ -423,7 +423,7 @@ export class StripePaymentIntent extends StripeIntent implements StripePaymentIn
   }
 
   get amount(): number { return this.native.getAmount().longValue(); }
-  get created(): Date { return new Date(this.native.getCreated().longValue()); }
+  get created(): Date { return new Date(this.native.getCreated()); }
   get currency(): string { return this.native.getCurrency(); }
   get captureMethod(): "manual" | "automatic" { return this.native.getCaptureMethod() as "manual" | "automatic"; }
 }
