@@ -1,19 +1,7 @@
-android {
-    compileSdkVersion 28
-    compileOptions {
-        sourceCompatibility 1.8
-        targetCompatibility 1.8
-    }
-}
-
-project.ext {
-  useAndroidX = false
-  enableJetifier = false
-}
-
 dependencies {
     def supportVer = "28.0.0"
     implementation "com.android.support:support-v4:$supportVer"
     implementation "com.android.support:appcompat-v7:$supportVer"
     implementation "com.android.support:design:$supportVer"
+    implementation 'com.stripe:stripe-android:10.4.6'
 }

@@ -2,17 +2,17 @@
   "nativescript": {
     "id": "org.nativescript.stripe.demo",
     "tns-ios": {
-      "version": "6.0.1"
+      "version": "5.3.1"
     },
     "tns-android": {
-      "version": "6.0.0"
+      "version": "5.3.1"
     }
   },
   "dependencies": {
     "nativescript-stripe": "file:../src",
     "nativescript-theme-core": "^1.0.4",
     "nativescript-unit-test-runner": "0.7.0",
-    "tns-core-modules": "6.0.1"
+    "tns-core-modules": "5.3.1"
   },
   "devDependencies": {
     "awesome-typescript-loader": "~5.2.1",
