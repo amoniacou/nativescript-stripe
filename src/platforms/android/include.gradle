@@ -8,7 +8,7 @@ android {
 
 project.ext {
   useAndroidX = false
-  enableJetifier=false
+  enableJetifier = false
 }
 
 dependencies {
