@@ -1,4 +1,3 @@
-
 declare class STDSAlreadyInitializedException extends STDSException {
 
 	static alloc(): STDSAlreadyInitializedException; // inherited from NSObject
