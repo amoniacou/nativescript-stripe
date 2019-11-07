@@ -1,13 +1,13 @@
 {
   "name": "nativescript-stripe",
-  "version": "6.0.0",
+  "version": "6.2.0",
   "description": "NativeScript Stripe sdk",
   "main": "stripe",
   "typings": "index.d.ts",
   "nativescript": {
     "platforms": {
-      "android": "6.0.0",
-      "ios": "6.0.1"
+      "android": "6.2.0",
+      "ios": "6.2.0"
     }
   },
   "scripts": {
@@ -68,9 +68,9 @@
     "rimraf": "^2.6.3",
     "rxjs": "^6.3.3",
     "semver": "^5.6.0",
-    "tns-core-modules": "6.0.1",
-    "tns-platform-declarations": "6.0.1",
-    "typescript": "3.4.5",
+    "tns-core-modules": "~6.2.0",
+    "tns-platform-declarations": "~6.2.0",
+    "typescript": "^3.4.5",
     "tslint": "^5.14.0",
     "zone.js": "^0.8.4"
   },

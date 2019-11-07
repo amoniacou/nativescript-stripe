@@ -1,7 +1,9 @@
 import { View } from 'tns-core-modules/ui/core/view';
 import { topmost } from "tns-core-modules/ui/frame";
 import { CardBrand, CardCommon, CreditCardViewBase, PaymentMethodCommon, StripePaymentIntentCommon, StripePaymentIntentStatus, Token } from './stripe.common';
-import { ios as iosUtils } from "tns-core-modules/utils/utils.ios";
+import { ios as iosUtils } from "tns-core-modules/utils/utils";
+
+declare var STPRedirectContext, STPSetupIntent, STPPaymentMethod, STPPaymentCardTextField, STPCardBrand, STPSetupIntentConfirmParams, STPPaymentIntentParams, STPPaymentIntentCaptureMethod, STPPaymentIntentStatus, STPCardValidator, STPCardValidationState, STPPaymentConfiguration, STPPaymentIntent, STPPaymentHandler, STPAPIClient, STPPaymentMethodCardParams, STPPaymentMethodBillingDetails, STPPaymentMethodParams, STPPaymentHandlerActionStatus, STPPaymentMethodType, STPPaymentContext;
 
 export class Stripe {
   constructor(apiKey: string) {
@@ -70,6 +72,7 @@ export class Stripe {
     STPPaymentHandler.sharedHandler().confirmSetupIntentWithAuthenticationContextCompletion(
       new StripeSetupIntentParams(paymentMethodId, clientSecret).native,
       this._getAuthentificationContext(),
+      // @ts-ignore
       (status: STPPaymentHandlerActionStatus, si: STPSetupIntent, error: NSError) => {
         if (error) {
           cb(new Error(error.toLocaleString()), null);
@@ -85,6 +88,7 @@ export class Stripe {
       clientSecret,
       this._getAuthentificationContext(),
       returnUrl,
+      // @ts-ignore
       (status: STPPaymentHandlerActionStatus, pi: STPSetupIntent, error: NSError) => {
         if (error) {
           cb(new Error(error.toLocaleString()), null);
@@ -99,6 +103,7 @@ export class Stripe {
     STPPaymentHandler.sharedHandler().confirmPaymentWithAuthenticationContextCompletion(
       params.native,
       this._getAuthentificationContext(),
+      // @ts-ignore
       (status: STPPaymentHandlerActionStatus, pi: STPPaymentIntent, error: NSError) => {
         if (error) {
           cb(new Error(error.toLocaleString()), null);
@@ -114,6 +119,7 @@ export class Stripe {
       clientSecret,
       this._getAuthentificationContext(),
       returnUrl,
+      // @ts-ignore
       (status: STPPaymentHandlerActionStatus, pi: STPPaymentIntent, error: NSError) => {
         if (error) {
           cb(new Error(error.toLocaleString()), null);
@@ -128,6 +134,7 @@ export class Stripe {
    *. Private
    */
 
+  // @ts-ignore
   private _getAuthentificationContext(): STPPaymentContext {
     const authContext = STPPaymentContext.alloc();
     const rootVC = topmost().currentPage.ios;
@@ -158,6 +165,7 @@ function callback(
     }
 
 export class Card implements CardCommon {
+  // @ts-ignore
   native: STPCardParams;
   private _brand: CardBrand;
   private _last4: string;
@@ -169,6 +177,7 @@ export class Card implements CardCommon {
     cardCVC: string
   ) {
     if (cardNumber && cardExpMonth && cardExpYear && cardCVC) {
+      // @ts-ignore
       this.native = STPCardParams.alloc().init();
       this.native.number = cardNumber;
       this.native.expMonth = cardExpMonth;
@@ -177,14 +186,17 @@ export class Card implements CardCommon {
     }
   }
 
+  // @ts-ignore
   public static fromNative(card: STPCardParams): Card {
     const newCard = new Card(null, null, null, null);
     newCard.native = card;
     return newCard;
   }
 
+  // @ts-ignore
   public static fromNativePaymentMethod(pm: STPPaymentMethod): Card {
     const newCard = new Card(null, null, null, null);
+    // @ts-ignore
     const card = STPCardParams.alloc().init();
     card.addressCountry = pm.card.country;
     card.expMonth = pm.card.expMonth;
@@ -370,6 +382,7 @@ export class Card implements CardCommon {
     return this._brand;
   }
 
+  // @ts-ignore
   private static toCardBrand(brand: STPCardBrand): CardBrand {
     switch (brand) {
       case STPCardBrand.Visa:
@@ -408,6 +421,7 @@ export class Card implements CardCommon {
 }
 
 export class CreditCardView extends CreditCardViewBase {
+  // @ts-ignore
   public createNativeView(): STPPaymentCardTextField {
     return STPPaymentCardTextField.alloc().initWithFrame(
       CGRectMake(10, 10, 300, 44)
@@ -437,6 +451,7 @@ export class CreditCardView extends CreditCardViewBase {
 
   get card(): Card {
     try {
+      // @ts-ignore
       const stpCardParams = STPCardParams.alloc();
       stpCardParams.cvc = this.nativeView.cardParams.cvc;
       stpCardParams.number = this.nativeView.cardParams.number;
@@ -462,8 +477,10 @@ export class CreditCardView extends CreditCardViewBase {
 }
 
 export class PaymentMethod implements PaymentMethodCommon {
+  // @ts-ignore
   native: STPPaymentMethod;
 
+  // @ts-ignore
   static fromNative(native: STPPaymentMethod): PaymentMethod {
     const pm = new PaymentMethod();
     pm.native = native;
@@ -480,6 +497,7 @@ export class PaymentMethod implements PaymentMethodCommon {
 }
 
 class StripeIntent {
+  // @ts-ignore
   native: STPSetupIntent | STPPaymentIntent;
 
   get created(): Date { return new Date(this.native.created); }
@@ -511,8 +529,10 @@ class StripeIntent {
 }
 
 export class StripePaymentIntent extends StripeIntent implements StripePaymentIntentCommon {
+  // @ts-ignore
   native: STPPaymentIntent;
 
+  // @ts-ignore
   static fromNative(native: STPPaymentIntent): StripePaymentIntent {
     const pi = new StripePaymentIntent();
     pi.native = native;
@@ -546,6 +566,7 @@ export class StripePaymentIntentParams {
   sourceId: string;
   returnURL: string;  // a URL that opens your app
 
+  // @ts-ignore
   get native(): STPPaymentIntentParams {
     const n = STPPaymentIntentParams.alloc().initWithClientSecret(this.clientSecret);
     n.paymentMethodParams = this.paymentMethodParams;
@@ -558,8 +579,10 @@ export class StripePaymentIntentParams {
 }
 
 export class StripeSetupIntent extends StripeIntent {
+  // @ts-ignore
   native: STPSetupIntent;
 
+  // @ts-ignore
   static fromNative(native: STPSetupIntent): StripeSetupIntent {
     const si = new StripeSetupIntent();
     si.native = native;
@@ -571,6 +594,7 @@ export class StripeSetupIntent extends StripeIntent {
 }
 
 export class StripeSetupIntentParams {
+  // @ts-ignore
   native: STPSetupIntentConfirmParams;
 
   constructor(paymentMethodId: string, clientSecret: string) {
@@ -581,6 +605,7 @@ export class StripeSetupIntentParams {
 }
 
 export class StripeRedirectSession {
+  // @ts-ignore
   native: STPRedirectContext;
   readonly state: StripeRedirectState;
 

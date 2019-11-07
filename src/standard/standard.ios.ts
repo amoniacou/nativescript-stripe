@@ -1,14 +1,38 @@
 import { Page } from "tns-core-modules/ui/page";
 import { StripeAddress, StripeConfigCommon, StripePaymentListener, StripePaymentMethod, StripeShippingAddressField, StripeShippingMethod } from "./standard.common";
 
+declare var STPContactFieldName, 
+	    STPContactFieldPostalAddress, 
+	    STPContactFieldPhoneNumber, 
+	    STPContactFieldEmailAddress,
+	    STPCustomerContext,
+	    STPPaymentConfiguration,
+	    STPPaymentContext,
+	    STPAddress,
+	    STPPaymentStatus,
+	    STPCustomerEphemeralKeyProvider,
+	    STPTheme,
+	    STPUserInformation,
+	    STPShippingStatus,
+	    STPPaymentContextDelegate,
+	    STPPaymentResult,
+	    STPApplePayPaymentOption,
+	    STPPaymentMethod,
+	    STPPaymentMethodType,
+	    STPCard
+	    ;
+
 export class StripeConfig extends StripeConfigCommon {
+  // @ts-ignore
   private _native: STPPaymentConfiguration;
+  // @ts-ignore
   get native(): STPPaymentConfiguration {
     // getter gives client a chance to set properties before using.
     if (!this._native) this._native = this.toNative();
     return this._native;
   }
 
+  // @ts-ignore
   private toNative(): STPPaymentConfiguration {
     if (!this.publishableKey) throw new Error("publishableKey must be set");
     let config = STPPaymentConfiguration.sharedConfiguration();
@@ -46,6 +70,7 @@ export class StripeConfig extends StripeConfigCommon {
 }
 
 export class StripeCustomerSession {
+  // @ts-ignore
   native: STPCustomerContext;
 
   constructor() {
@@ -53,6 +78,7 @@ export class StripeCustomerSession {
   }
 }
 
+// @ts-ignore
 class StripeKeyProvider extends NSObject implements STPCustomerEphemeralKeyProvider {
   static ObjCProtocols = [STPCustomerEphemeralKeyProvider];
 
@@ -71,6 +97,7 @@ class StripeKeyProvider extends NSObject implements STPCustomerEphemeralKeyProvi
 }
 
 export class StripePaymentSession {
+  // @ts-ignore
   native: STPPaymentContext;
   private delegate: StripePaymentDelegate; // Necessary to keep delegate in memory
   _paymentInProgress: boolean;
@@ -164,6 +191,7 @@ export class StripePaymentSession {
   }
 }
 
+// @ts-ignore
 class StripePaymentDelegate extends NSObject implements STPPaymentContextDelegate {
   static ObjCProtocols = [STPPaymentContextDelegate];
 
@@ -177,6 +205,7 @@ class StripePaymentDelegate extends NSObject implements STPPaymentContextDelegat
   private parent: StripePaymentSession;
   private listener: StripePaymentListener;
 
+  // @ts-ignore
   paymentContextDidChange(paymentContext: STPPaymentContext): void {
     let data = {
       isReadyToCharge: paymentContext.selectedPaymentOption != null,
@@ -187,6 +216,7 @@ class StripePaymentDelegate extends NSObject implements STPPaymentContextDelegat
     this.listener.onPaymentDataChanged(data);
   }
 
+  // @ts-ignore
   paymentContextDidCreatePaymentResultCompletion(paymentContext: STPPaymentContext, paymentResult: STPPaymentResult, completion: (p1: NSError) => void): void {
     StripeConfig.shared().backendAPI.capturePayment(
       paymentResult.paymentMethod.stripeId,
@@ -200,10 +230,12 @@ class StripePaymentDelegate extends NSObject implements STPPaymentContextDelegat
       });
   }
 
+  // @ts-ignore
   paymentContextDidFailToLoadWithError(paymentContext: STPPaymentContext, error: NSError): void {
     this.listener.onError(error.code, error.localizedDescription);
   }
 
+  // @ts-ignore
   paymentContextDidFinishWithStatusError(paymentContext: STPPaymentContext, status: STPPaymentStatus, error: NSError): void {
     this.parent._paymentInProgress = false;
     switch (status) {
@@ -219,6 +251,7 @@ class StripePaymentDelegate extends NSObject implements STPPaymentContextDelegat
     }
   }
 
+  // @ts-ignore
   paymentContextDidUpdateShippingAddressCompletion(paymentContext: STPPaymentContext, address: STPAddress, completion: (p1: STPShippingStatus, p2: NSError, p3: NSArray<PKShippingMethod>, p4: PKShippingMethod) => void): void {
     let methods = this.listener.provideShippingMethods(createAddress(address));
     if (!methods.isValid) {
@@ -239,6 +272,7 @@ function createError(domain: string, code: number, error: string): NSError {
   });
 }
 
+// @ts-ignore
 function createPaymentMethod(paymentContext: STPPaymentContext): StripePaymentMethod {
   if (!paymentContext.selectedPaymentOption) return undefined;
   const pmt = paymentContext.selectedPaymentOption;
@@ -250,6 +284,7 @@ function createPaymentMethod(paymentContext: STPPaymentContext): StripePaymentMe
     stripeId = undefined;
     brand = undefined;
   } else if (pmt.isKindOfClass(STPPaymentMethod)) {
+    // @ts-ignore
     const pm = <STPPaymentMethod><unknown>pmt;
     if (pm.type === STPPaymentMethodType.Card) {
       type = "Card";
@@ -267,6 +302,7 @@ function createPaymentMethod(paymentContext: STPPaymentContext): StripePaymentMe
   };
 }
 
+// @ts-ignore
 function createShippingMethod(paymentContext: STPPaymentContext): StripeShippingMethod {
   if (!paymentContext.selectedShippingMethod) return undefined;
   return {
@@ -286,6 +322,7 @@ function createPKShippingMethod(method: StripeShippingMethod): PKShippingMethod 
   return m;
 }
 
+// @ts-ignore
 function createAddress(address: STPAddress): StripeAddress {
   if (!address) return undefined;
   return {
